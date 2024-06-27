@@ -4,3 +4,5 @@ node_modules/
 .Rproj.user
 .Rhistory
 .netlify
+raw_data
+src/static
