@@ -1,0 +1,6 @@
+dist/
+src/.observablehq/cache/
+node_modules/
+.Rproj.user
+.Rhistory
+.netlify
