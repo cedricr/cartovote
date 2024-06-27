@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "https://observatoire-votes.netlify.app"
+  to = "https://cartovote.fr"
+  status = 301
+  force = true
