@@ -109,8 +109,8 @@ const valuemap = new Map(
   })
 );
 
-const path2154 = getPath(bureaux_vote_dept, size);
-const comPath2154 = getPath(communes_dept, size);
+const path = getPath(bureaux_vote_dept, size, selectedDept.code);
+const comPath = getPath(communes_dept, size, selectedDept.code);
 
 function handleMapClick(d) {
   const p = d.properties;
@@ -136,8 +136,8 @@ le territoire. Les contours présentés ici sont approximatifs.</em>
 ${display(Legend(d3.scaleQuantize([0, 100], d3.schemeBlues[5]), { title:
 "Abstention (%)", tickFormat: ".0f", }) )}
 
-${MainMap(size, bureaux_vote_dept, path2154, communes_dept, comPath2154,
-valuemap, handleMapClick)}
+${MainMap(size, bureaux_vote_dept, path, communes_dept, comPath, valuemap,
+handleMapClick)}
 
 ```jsx
 display(<Results infos={infosBureauVote} />);
