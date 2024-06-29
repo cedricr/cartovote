@@ -1,9 +1,12 @@
 export default function Results({ infos }) {
-  if (infos?.commune) {
+  console.log(infos)
+  if (! infos.commune) {
+    return "Cliquez sur un bureau de vote pour consulter ses résultats."
+  } else {
     return (
       <div>
         <strong>
-          {infos.commune?.nomCommune} ({infos?.commune?.codeCommune})
+          {infos.commune?.nomCommune}
         </strong>
         <br />
         {infos.bv != null ? 

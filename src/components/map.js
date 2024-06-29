@@ -1,21 +1,25 @@
 import * as d3 from "npm:d3";
+import { getPath } from "./projection.js";
 
 export default function MainMap(
-  size,
+  width,
   layer,
-  path2154,
   communes,
-  comPath2154,
+  dept,
+
   valuemap,
   onMapClick
 ) {
+  const height = width;
   const color = d3.scaleQuantize(d3.schemeBlues[9]);
+  const path = getPath(layer, width, width, dept.code);
+  const comPath = getPath(communes, width, width, dept.code);
 
   const svg = d3
     .create("svg")
-    .attr("viewBox", [0, 0, size.width, size.height])
-    .attr("width", size.width)
-    .attr("height", size.height);
+    .attr("viewBox", [0, 0, width, height])
+    .attr("width", width)
+    .attr("height", height);
 
   let data = {};
   const g = svg.append("g");
@@ -33,7 +37,7 @@ export default function MainMap(
   g.selectAll("path")
     .data(layer.features)
     .join("path")
-    .attr("d", path2154)
+    .attr("d", path)
     .attr("fill", (d) => {
       return color(
         d.properties.codeBureauVote
@@ -72,7 +76,7 @@ export default function MainMap(
     .selectAll("path")
     .data(communes.features)
     .join("path")
-    .attr("d", comPath2154)
+    .attr("d", comPath)
     .attr("stroke", "#212121")
     .attr("fill-opacity", 0);
 

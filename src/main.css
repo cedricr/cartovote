@@ -1,0 +1,60 @@
+@import url("observablehq:default.css");
+@import url("observablehq:theme-air.css");
+@import url("observablehq:theme-alt.css");
+@import url("observablehq:theme-wide.css");
+
+p {
+  max-width: 100%;
+}
+
+#observablehq-footer {
+  margin-top: 1rem;
+  text-align: right;
+}
+
+#observablehq-center {
+  padding-right: 0 !important;
+}
+
+.card {
+  margin: 0;
+}
+
+.map-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.map {
+  overflow: hidden;
+}
+
+.map-info {
+  overflow-x: auto;
+}
+
+@media screen and (min-width: 60rem) {
+  #observablehq-footer {
+    margin-top: 4rem;
+  }
+
+  .map-container {
+    flex-direction: row;
+    gap: 1.2rem;
+  }
+
+  .map {
+    overflow: hidden;
+    flex-grow: 1;
+    min-width: 25rem;
+    max-width: 70rem;
+  }
+
+  .map-info {
+    flex-basis: 25rem;
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+}

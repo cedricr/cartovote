@@ -1,15 +1,12 @@
 ---
-theme: "alt"
+style: main.css
 ---
 
 # ${selectedElection.nom}
 
-Cliquez sur un bureau de vote pour consulter ses résultats.
-
 ```js
 import Legend from "./components/legend.js";
 import MainMap from "./components/map.js";
-import { getPath } from "./components/projection.js";
 import Results from "./components/results.js";
 import {
   elections,
@@ -106,7 +103,6 @@ const setInfosBureauVote = (bv, commune, candidates) => {
 
 ```js
 // Préparation de la carte
-const size = { width: Math.min(width, 600), height: Math.min(width, 600) };
 
 const valuemap = new Map(
   bureaux_vote_dept.features.map((d) => {
@@ -117,9 +113,6 @@ const valuemap = new Map(
       : 0;
   })
 );
-
-const path = getPath(bureaux_vote_dept, size, selectedDept.code);
-const comPath = getPath(communes_dept, size, selectedDept.code);
 
 function handleMapClick(d) {
   const p = d.properties;
@@ -139,15 +132,24 @@ const selectedDept = view(
 );
 ```
 
-<em>Il n’existe pour le moment pas de couche officielle des bureaux de vote sur
-le territoire. Les contours présentés ici sont approximatifs.</em>
+<div class="map-container" >
+  <div class="card map">
+    ${display(Legend(
+      d3.scaleQuantize([0, 100], 
+      d3.schemeBlues[5]), { 
+          title: "Abstention (%)", tickFormat: ".0f", 
+        }) 
+    )}
 
-${display(Legend(d3.scaleQuantize([0, 100], d3.schemeBlues[5]), { title:
-"Abstention (%)", tickFormat: ".0f", }) )}
+${resize((width) => { return MainMap( width, bureaux_vote_dept, communes_dept,
+selectedDept, valuemap, handleMapClick ) })}
 
-${MainMap(size, bureaux_vote_dept, path, communes_dept, comPath, valuemap,
-handleMapClick)}
+  </div>
+  <div class="card map-info">
 
 ```jsx
 display(<Results infos={infosBureauVote} />);
 ```
+
+  </div>
+</div>

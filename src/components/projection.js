@@ -82,16 +82,15 @@ function proj4d3(proj4string) {
   return projection;
 }
 
-export function getPath(layer, size, departement) {
+export function getPath(layer, width, height, departement) {
   const espg_code = DROM_ESPG_CODES[departement] || 2154;
   const proj_departement = proj4d3(espg_code);
-  const margin = 0;
   const map_extent = [
-    [margin, margin],
-    [size.width - margin, size.height - margin],
+    [0, 0],
+    [width, height],
   ];
 
-  const proj_e4326_to_map_e2154 = proj_departement.fitExtent(map_extent, layer);
+  const proj_4326_to_map = proj_departement.fitExtent(map_extent, layer);
 
-  return d3.geoPath(proj_e4326_to_map_e2154);
+  return d3.geoPath(proj_4326_to_map);
 }
