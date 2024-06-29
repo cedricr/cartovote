@@ -16,6 +16,8 @@ import {
   getBVInfo,
   getCommuneInfo,
   getCandidatesInfo,
+  getCandidatesResults,
+  getGeneralResults,
 } from "./components/data.js";
 ```
 
@@ -29,15 +31,22 @@ const selectedElection = view(
 ```
 
 ```js
-// Chargement des données
-
-const resultatsGlobaux = selectedElection.general.csv();
-const resultatsCandidats = selectedElection.candidats.csv();
 const bureauxVoteEtCommunes = FileAttachment(
   "./static/bureaux_vote_et_communes.topojson"
 ).json();
 // TODO: s’assurer qu’on n’affiche que les départements où on a des données
 const departements = await d3.json("https://geo.api.gouv.fr/departements");
+```
+
+```js
+// Chargement des données
+
+const resultatsGlobaux = selectedElection
+  ? await getGeneralResults(selectedElection)
+  : null;
+const resultatsCandidats = selectedElection
+  ? await getCandidatesResults(selectedElection)
+  : null;
 ```
 
 ```js

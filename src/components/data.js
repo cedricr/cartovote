@@ -33,6 +33,20 @@ export const elections = [
   },
 ];
 
+export async function getGeneralResults(selectedElection) {
+  if (!selectedElection.generalData) {
+    selectedElection.generalData = await selectedElection.general.csv();
+  }
+  return selectedElection.generalData;
+}
+
+export async function getCandidatesResults(selectedElection) {
+  if (!selectedElection.candidatsData) {
+    selectedElection.candidatsData = await selectedElection.candidats.csv();
+  }
+  return selectedElection.candidatsData;
+}
+
 export function getBVInfo(results, bv) {
   return results.find((f) => f.codeBureauVote === bv.properties.codeBureauVote);
 }
