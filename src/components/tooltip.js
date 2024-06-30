@@ -11,7 +11,6 @@ export function addTooltip(svgSelect, elementSelect = null) {
       border-color: rgba(0, 0, 0, 0.4);
       border-width: 1px;
       border-radius: 4px;
-      font-family: sans-serif;
       font-size: 12px;
       padding: 4px 8px;
       visibility: hidden;
