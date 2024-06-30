@@ -1,5 +1,4 @@
 export default function Results({ infos }) {
-  console.log(infos)
   if (! infos.commune) {
     return "Cliquez sur un bureau de vote pour consulter ses résultats."
   } else {

@@ -1,5 +1,6 @@
 import * as d3 from "npm:d3";
 import { getPath } from "./projection.js";
+import { addTooltip } from "./tooltip.js";
 
 const naColor = "#ababab";
 const comColor = "#212121";
@@ -37,7 +38,6 @@ export default function MainMap(
     .attr("width", width)
     .attr("height", height);
 
-  let data = {};
   const g = svg.append("g");
 
   const zoom = d3
@@ -46,28 +46,32 @@ export default function MainMap(
     .on("zoom", zoomed)
     .clickDistance(5);
 
+  const tooltip = addTooltip(svg);
   g.selectAll("path")
     .data(layer.features)
     .join("path")
     .attr("d", path)
+    .attr("cursor", "pointer")
     .attr("fill", (d) => getColor(d))
     .attr("stroke-opacity", 0.3)
     .attr("stroke", bvColor)
     .on("touchmove mousemove", function (event, d) {
       d3.select(this).attr("fill", "red");
-      data = d.properties;
+      const data = d.properties;
+      const [mx, my] = d3.pointer(event);
+      tooltip.show(
+        `<strong>${
+          data.nomCommune
+        }</strong><br />Bureau n⁰${data?.numeroBureauVote.replace(/^0+/, "")}`,
+        mx,
+        my
+      );
     })
     .on("touchend mouseleave", function (event) {
       d3.select(this).attr("fill", (d) => getColor(d));
-      data = {};
+      tooltip.hide();
     })
-    .on("click", (event, d) => onMapClick(d))
-    .append("title");
-  // .text((d, i) => {
-  //   const bv = getBVInfo(d);
-  //   const com = getCommuneInfo(d);
-  //   return `${com.nom_commune}, bureau n⁰${bv?.code_bv.replace(/^0+/, "")}`;
-  // });
+    .on("click", (event, d) => onMapClick(d));
 
   g.append("g")
     .attr("pointer-events", "none")
