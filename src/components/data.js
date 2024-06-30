@@ -11,25 +11,25 @@ export const elections = [
     id: "2022_legi_t2",
     candidats: FileAttachment("../data/resultats_candidats_2022_legi_t2.csv"),
     general: FileAttachment("../data/resultats_generaux_2022_legi_t2.csv"),
-    nom: "Élections législatives 2022, 2e tour",
+    nom: "Élections législatives 2022, 2ᵉ tour",
   },
   {
     id: "2022_legi_t1",
     candidats: FileAttachment("../data/resultats_candidats_2022_legi_t1.csv"),
     general: FileAttachment("../data/resultats_generaux_2022_legi_t1.csv"),
-    nom: "Élections législatives 2022, 1er tour",
+    nom: "Élections législatives 2022, 1ᵉʳ tour",
   },
   {
     id: "2022_pres_t2",
     candidats: FileAttachment("../data/resultats_candidats_2022_pres_t2.csv"),
     general: FileAttachment("../data/resultats_generaux_2022_pres_t2.csv"),
-    nom: "Élection présidentielle 2022, 2e tour",
+    nom: "Élection présidentielle 2022, 2ᵉ tour",
   },
   {
     id: "2022_pres_t1",
     candidats: FileAttachment("../data/resultats_candidats_2022_pres_t1.csv"),
     general: FileAttachment("../data/resultats_generaux_2022_pres_t1.csv"),
-    nom: "Élection présidentielle 2022, 1er tour",
+    nom: "Élection présidentielle 2022, 1ᵉʳ tour",
   },
 ];
 

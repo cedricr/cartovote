@@ -62,7 +62,7 @@ export default function MainMap(
       tooltip.show(
         `<strong>${
           data.nomCommune
-        }</strong><br />Bureau n⁰${data?.numeroBureauVote.replace(/^0+/, "")}`,
+        }</strong><br />Bureau nº${data?.numeroBureauVote.replace(/^0+/, "")}`,
         mx,
         my
       );
