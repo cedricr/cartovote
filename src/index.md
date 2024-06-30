@@ -8,6 +8,7 @@ style: main.css
 import Legend from "./components/legend.js";
 import MainMap from "./components/map.js";
 import Results from "./components/results.js";
+
 import {
   elections,
   getBVInfo,
@@ -58,9 +59,11 @@ const bureaux_vote_fixed_id = {
         ...f,
         properties: {
           ...f.properties,
-          codeBureauVote: `${f.properties.codeCommune}_${
-            f.properties.codeBureauVote?.split("_")[1]
-          }`,
+          codeBureauVote: f.properties?.codeBureauVote
+            ? `${f.properties.codeCommune}_${
+                f.properties.codeBureauVote.split("_")[1]
+              }`
+            : null,
         },
       };
     }),
@@ -108,9 +111,10 @@ const valuemap = new Map(
   bureaux_vote_dept.features.map((d) => {
     const b = getBVInfo(resGlobauxDept, d);
 
-    return d
-      ? [d.properties.codeBureauVote, parseFloat(b?.abstentions / b?.inscrits)]
-      : 0;
+    return [
+      d.properties.codeBureauVote,
+      parseFloat(b?.abstentions / b?.inscrits),
+    ];
   })
 );
 
@@ -135,9 +139,9 @@ const selectedDept = view(
 <div class="map-container" >
   <div class="card map">
     ${display(Legend(
-      d3.scaleQuantize([0, 100], 
-      d3.schemeBlues[5]), { 
-          title: "Abstention (%)", tickFormat: ".0f", 
+      d3.scaleSequential([20, 80], 
+      d3.interpolateBlues), { 
+          title: "Abstention (%)", tickFormat: ".0f", reverted: false
         }) 
     )}
 

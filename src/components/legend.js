@@ -14,6 +14,7 @@ export default function Legend(
     marginBottom = 16 + tickSize,
     marginLeft = 0,
     ticks = width / 64,
+    reverted = false,
     tickFormat,
     tickValues,
   } = {}
@@ -25,7 +26,9 @@ export default function Legend(
     const context = canvas.getContext("2d");
     for (let i = 0; i < n; ++i) {
       context.fillStyle = color(i / (n - 1));
-      context.fillRect(i, 0, 1, 1);
+      reverted
+        ? context.fillRect(n - i, 0, 1, 1)
+        : context.fillRect(i, 0, 1, 1);
     }
     return canvas;
   }
