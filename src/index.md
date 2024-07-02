@@ -186,7 +186,7 @@ ${deptInput}
  <div class="card map">
     <div style="display: flex; flex-direction: row; column-gap: 2rem; align-items: center; flex-wrap: wrap">
       <div>${display(legend )}</div>
-      <div>${opacityInput}</div>
+      <div>Opacité : ${opacityInput}</div>
     </div>
     <div id="map" style="flex-grow: 1">
     </div>
