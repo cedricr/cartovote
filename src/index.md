@@ -5,9 +5,13 @@ style: main.css
 <link rel="preconnect" href="https://rsms.me/">
 <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
 
-# ${selectedElection.nom}
-
 ```js
+//////////
+// Imports
+//////////
+
+import * as L from "npm:leaflet";
+
 import Legend from "./components/legend.js";
 import MainMap from "./components/map.js";
 import Results from "./components/results.js";
@@ -23,37 +27,58 @@ import {
 ```
 
 ```js
-const selectedElection = view(
-  Inputs.select(elections, {
-    format: (t) => `${t.nom}`,
-    value: elections[2],
-  })
-);
+/////////
+// Inputs
+/////////
+
+const departements = (
+  await d3.json("https://geo.api.gouv.fr/departements")
+).filter((d) => d.code != "976"); // TODO: récupérer les données de Mayotte
+
+const deptInput = Inputs.select(departements, {
+  format: (t) => `${t.code} – ${t.nom}`,
+});
+const selectedDept = Generators.input(deptInput);
+
+const electionInput = Inputs.select(elections, {
+  format: (t) => `${t.nom}`,
+  value: elections[2],
+});
+const selectedElection = Generators.input(electionInput);
+
+const opacityInput = html`<input
+  type="range"
+  step="0.1"
+  min="0"
+  max="1"
+  value="0.9"
+/>`;
+const opacity = Generators.input(opacityInput);
 ```
 
 ```js
+/////////////////////////
+// Chargement des données
+/////////////////////////
+
 const bureauxVoteEtCommunes = FileAttachment(
   "./static/bureaux_vote_et_communes.topojson"
 ).json();
-// TODO: s’assurer qu’on n’affiche que les départements où on a des données
-const departements = await d3.json("https://geo.api.gouv.fr/departements");
-```
-
-```js
-// Chargement des données
 
 const resultatsGlobaux = selectedElection
-  ? await getGeneralResults(selectedElection)
+  ? getGeneralResults(selectedElection)
   : null;
 const resultatsCandidats = selectedElection
-  ? await getCandidatesResults(selectedElection)
+  ? getCandidatesResults(selectedElection)
   : null;
 ```
 
 ```js
+///////////////////////////////////////
 // Filtrage des données par département
+///////////////////////////////////////
 
-const bureaux_vote_fixed_id = {
+const bureauxVote = {
   type: "FeatureCollection",
   features: topojson
     .feature(bureauxVoteEtCommunes, bureauxVoteEtCommunes.objects.bureaux_vote)
@@ -72,9 +97,9 @@ const bureaux_vote_fixed_id = {
     }),
 };
 
-const bureaux_vote_dept = {
+const bureauxVoteDept = {
   type: "FeatureCollection",
-  features: bureaux_vote_fixed_id.features.filter(
+  features: bureauxVote.features.filter(
     (item) => item.properties.codeDepartement == selectedDept.code
   ),
 };
@@ -87,6 +112,7 @@ const communes_dept = {
       (item) => item.properties.codeDepartement == selectedDept.code
     ),
 };
+
 const resGlobauxDept = resultatsGlobaux
   .filter((c) => c.codeDepartement === selectedDept.code)
   .map((c) => ({
@@ -100,26 +126,17 @@ const resCandidatsDept = resultatsCandidats
     ...c,
     codeBureauVote: `${c.codeCommune}_${c.numeroBureauVote}`,
   }));
+```
+
+```js
+///////////////////////////
+// Préparation de l’infobox
+///////////////////////////
 
 const infosBureauVote = Mutable({});
 const setInfosBureauVote = (bv, commune, candidates) => {
   infosBureauVote.value = { bv, commune, candidates };
 };
-```
-
-```js
-// Préparation de la carte
-
-const valuemap = new Map(
-  bureaux_vote_dept.features.map((d) => {
-    const b = getBVInfo(resGlobauxDept, d);
-
-    return [
-      d.properties.codeBureauVote,
-      parseFloat(b?.abstentions / b?.inscrits),
-    ];
-  })
-);
 
 function handleMapClick(d) {
   const p = d.properties;
@@ -132,26 +149,50 @@ function handleMapClick(d) {
 ```
 
 ```js
-const selectedDept = view(
-  Inputs.select(departements, {
-    format: (t) => `${t.code} – ${t.nom}`,
+//////////////////////////
+// Préparation de la carte
+//////////////////////////
+
+const valuemap = new Map(
+  bureauxVoteDept.features.map((d) => {
+    const b = getBVInfo(resGlobauxDept, d);
+
+    return [
+      d.properties.codeBureauVote,
+      parseFloat(b?.abstentions / b?.inscrits),
+    ];
   })
 );
+
+const legend = Legend(d3.scaleSequential([20, 80], d3.interpolateBlues), {
+  title: "Abstention (%)",
+  tickFormat: ".0f",
+  reverted: false,
+  opacity,
+});
 ```
 
-<div class="map-container" >
-  <div class="card map">
-    ${display(Legend(
-      d3.scaleSequential([20, 80], 
-      d3.interpolateBlues), { 
-          title: "Abstention (%)", tickFormat: ".0f", reverted: false
-        }) 
-    )}
+<!------------------------------------------------------------------------------------>
+<!--                                     HTML                                       -->
+<!------------------------------------------------------------------------------------>
 
-${resize((width) => { return MainMap( width, bureaux_vote_dept, communes_dept,
-selectedDept, valuemap, handleMapClick ) })}
+# ${selectedElection.nom}
 
+${electionInput}
+
+${deptInput}
+
+<div class="map-container">
+ <div class="card map">
+    <div style="display: flex; flex-direction: row; column-gap: 2rem; align-items: center; flex-wrap: wrap">
+      <div>${display(legend )}</div>
+      <div>${opacityInput}</div>
+    </div>
+    <div id="map" style="flex-grow: 1">
+    </div>
   </div>
+  
+  
   <div class="card map-info">
 
 ```jsx
@@ -160,3 +201,14 @@ display(<Results infos={infosBureauVote} />);
 
   </div>
 </div>
+
+```js
+MainMap(
+  width,
+  bureauxVoteDept,
+  communes_dept,
+  valuemap,
+  handleMapClick,
+  opacity
+);
+```

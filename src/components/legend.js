@@ -17,6 +17,7 @@ export default function Legend(
     reverted = false,
     tickFormat,
     tickValues,
+    opacity = 1,
   } = {}
 ) {
   function ramp(color, n = 256) {
@@ -26,6 +27,7 @@ export default function Legend(
     const context = canvas.getContext("2d");
     for (let i = 0; i < n; ++i) {
       context.fillStyle = color(i / (n - 1));
+      context.globalAlpha = opacity;
       reverted
         ? context.fillRect(n - i, 0, 1, 1)
         : context.fillRect(i, 0, 1, 1);

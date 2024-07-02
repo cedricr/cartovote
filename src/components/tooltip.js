@@ -17,7 +17,7 @@ export function addTooltip(svgSelect, elementSelect = null) {
       max-width: 150px;
   }`;
 
-  svgSelect.append("style").text(style);
+  svgSelect.append("g").append("style").text(style);
 
   const foreignObject = svgSelect
     .append("foreignObject")
