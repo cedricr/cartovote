@@ -46,8 +46,8 @@ function displayOverlay(
   opacity
 ) {
   const naColor = "#ababab";
-  const comColor = opacity > 0.4 ? "#dedede" : "#212121";
-  const bvColor = opacity > 0.4 ? "white" : "black";
+  const comColor = "#212121";
+  const bvColor = "#212121";
   const color = d3.scaleSequential([0.2, 0.8], d3.interpolateBlues);
 
   function getColor(d) {
