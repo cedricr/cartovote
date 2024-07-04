@@ -42,7 +42,7 @@ const selectedDept = Generators.input(deptInput);
 
 const electionInput = Inputs.select(elections, {
   format: (t) => `${t.nom}`,
-  value: elections[2],
+  value: elections[0],
 });
 const selectedElection = Generators.input(electionInput);
 

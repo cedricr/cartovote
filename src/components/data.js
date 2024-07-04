@@ -2,6 +2,12 @@ import { FileAttachment } from "npm:@observablehq/stdlib";
 
 export const elections = [
   {
+    id: "2024_legi_t1",
+    candidats: FileAttachment("../data/resultats_candidats_2024_legi_t1.csv"),
+    general: FileAttachment("../data/resultats_generaux_2024_legi_t1.csv"),
+    nom: "Élections législatives 2024, 1ᵉʳ tour",
+  },
+  {
     id: "2024_euro_t1",
     candidats: FileAttachment("../data/resultats_candidats_2024_euro_t1.csv"),
     general: FileAttachment("../data/resultats_generaux_2024_euro_t1.csv"),

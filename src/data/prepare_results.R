@@ -2,7 +2,7 @@ library(readr)
 library(dplyr)
 library(janitor)
 library(stringr)
-
+library(tidyr)
 
 prepare_bv = function(election) {
   results = read_csv2("raw_data/general_results.csv", show_col_types = FALSE) |>
@@ -36,6 +36,23 @@ prepare_bv = function(election) {
   format_csv(results, na = "")
 }
 
+prepare_results_miom = function(filename) {
+  results = read_csv2(filename, show_col_types = FALSE) |>
+    clean_names() |>
+    select(
+      codeDepartement = code_departement,
+      codeCommune = code_commune,
+      numeroBureauVote = code_bv,
+      inscrits, abstentions,
+      votants, blancs, nuls, exprimes
+    ) |>
+    mutate(
+      codeCirco = "",
+      nomCirco = ""
+    )
+  format_csv(results, na = "")
+}
+
 
 prepare_candidats = function(election) {
   results = read_csv2("raw_data/candidats_results.csv", show_col_types = FALSE) |>
@@ -62,10 +79,32 @@ prepare_candidats = function(election) {
       codeCommune,
       numeroBureauVote = code_du_b_vote,
       liste, nuance,
-      nbVoix = voix,
-      libelle_abrege_liste,
-      prenom,
-      nom
+      nbVoix = voix
     )
+  format_csv(results, na = "")
+}
+
+prepare_candidats_miom = function(filename) {
+  results = read_csv2(filename, show_col_types = FALSE) |>
+    clean_names() |>
+    select(
+      codeDepartement = code_departement,
+      codeCommune = code_commune,
+      numeroBureauVote = code_bv,
+      starts_with("nuance_candidat_") | starts_with("nom_candidat_") | starts_with("prenom_candidat_") | starts_with("voix_") | starts_with("elu_")
+    ) |>
+    pivot_longer(
+      cols = starts_with("nuance_candidat_") | starts_with("nom_candidat_") | starts_with("prenom_candidat_") | starts_with("voix_") | starts_with("elu_"),
+      names_to = c(".value", "num_candidat"),
+      names_pattern = "(.*)_(\\d*)",
+      values_drop_na = TRUE,
+    ) |>
+    rename(
+      nuance = nuance_candidat, nbVoix = voix
+    ) |>
+    mutate(
+      liste = str_c(prenom_candidat, " ", nom_candidat)
+    ) |>
+    select(-num_candidat, -prenom_candidat, -nom_candidat)
   format_csv(results, na = "")
 }
