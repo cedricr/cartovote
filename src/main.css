@@ -25,6 +25,10 @@ p {
   max-width: 100%;
 }
 
+#observablehq-toc {
+  display: none;
+}
+
 #observablehq-footer {
   margin-top: 1rem;
   text-align: right;
