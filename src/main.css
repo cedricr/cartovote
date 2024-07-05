@@ -25,6 +25,9 @@ p {
   max-width: 100%;
 }
 
+form label {
+  width: fit-content !important;
+}
 #observablehq-toc {
   display: none;
 }

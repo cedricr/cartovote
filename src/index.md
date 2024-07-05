@@ -46,7 +46,9 @@ const electionInput = Inputs.select(elections, {
 });
 const selectedElection = Generators.input(electionInput);
 
-const mailleInput = Inputs.select(["commune", "bureau de vote"]);
+const mailleInput = Inputs.select(["commune", "bureau de vote"], {
+  label: "Maille :",
+});
 const maille = Generators.input(mailleInput);
 
 const opacityInput = html`<input
@@ -224,12 +226,11 @@ const legend = Legend(d3.scaleSequential([20, 80], d3.interpolateBlues), {
 
 # ${selectedElection.nom}
 
+<div style="display: flex; flex-direction: row;  column-gap: 2rem; row-gap: 1rem; align-items: center; flex-wrap: wrap; margin: 1rem 0;">
 ${electionInput}
-
 ${deptInput}
-
 ${mailleInput}
-
+</div>
 <div class="map-container">
  <div class="card map">
     <div style="display: flex; flex-direction: row; column-gap: 2rem; align-items: center; flex-wrap: wrap">
