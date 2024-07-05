@@ -8,6 +8,7 @@ let svgLayer = null;
 export default function MainMap(
   width,
   layer,
+  level,
   communes,
   valuemap,
   onMapClick,
@@ -30,6 +31,7 @@ export default function MainMap(
   displayOverlay(
     overlayPane,
     currentLayer,
+    level,
     communes,
     valuemap,
     onMapClick,
@@ -40,6 +42,7 @@ export default function MainMap(
 function displayOverlay(
   overlay,
   layer,
+  level,
   communes,
   valuemap,
   onMapClick,
@@ -51,10 +54,17 @@ function displayOverlay(
   const color = d3.scaleSequential([0.2, 0.8], d3.interpolateBlues);
 
   function getColor(d) {
-    return d.properties.codeBureauVote &&
-      Number.isFinite(valuemap.get(d.properties.codeBureauVote))
-      ? color(valuemap.get(d.properties.codeBureauVote))
-      : naColor;
+    if (level === "commune") {
+      return d.properties.codeCommune &&
+        Number.isFinite(valuemap.get(d.properties.codeCommune))
+        ? color(valuemap.get(d.properties.codeCommune))
+        : naColor;
+    } else {
+      return d.properties.codeBureauVote &&
+        Number.isFinite(valuemap.get(d.properties.codeBureauVote))
+        ? color(valuemap.get(d.properties.codeBureauVote))
+        : naColor;
+    }
   }
   const projection = d3.geoTransform({
     point: function (longitude, latitude) {
@@ -86,13 +96,20 @@ function displayOverlay(
       d3.select(this).attr("fill", "red");
       const data = d.properties;
       const [mx, my] = d3.pointer(event);
-      tooltip.show(
-        `<strong>${
-          data.nomCommune
-        }</strong><br />Bureau nº${data?.numeroBureauVote.replace(/^0+/, "")}`,
-        mx,
-        my
-      );
+      if (level === "commune") {
+        tooltip.show(`<strong>${data.nomCommune}</strong>`, mx, my);
+      } else {
+        tooltip.show(
+          `<strong>${
+            data.nomCommune
+          }</strong><br />Bureau nº${data?.numeroBureauVote.replace(
+            /^0+/,
+            ""
+          )}`,
+          mx,
+          my
+        );
+      }
     })
     .on("touchend mouseleave", function (event) {
       d3.select(this).attr("fill", (d) => getColor(d));

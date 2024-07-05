@@ -53,8 +53,15 @@ export async function getCandidatesResults(selectedElection) {
   return selectedElection.candidatsData;
 }
 
-export function getBVInfo(results, bv) {
-  return results.find((f) => f.codeBureauVote === bv.properties.codeBureauVote);
+export function getTerritoryInfo(results, level, territory) {
+  if (level === "commune") {
+    return results.find(
+      (f) => f.codeCommune === territory.properties.codeCommune
+    );
+  }
+  return results.find(
+    (f) => f.codeBureauVote === territory.properties.codeBureauVote
+  );
 }
 
 export function getCommuneInfo(communes, bv) {
@@ -63,7 +70,14 @@ export function getCommuneInfo(communes, bv) {
   )?.properties;
 }
 
-export function getCandidatesInfo(deptCandidats, bv) {
+export function getCandidatesInfo(deptCandidats, level, bv) {
+  if (level === "commune") {
+    return deptCandidats
+      .filter((c) => {
+        return c.codeCommune === bv.properties.codeCommune;
+      })
+      .sort((a, b) => parseInt(b.nbVoix) - parseInt(a.nbVoix));
+  }
   return deptCandidats
     .filter((c) => {
       return c.codeBureauVote === bv.properties.codeBureauVote;

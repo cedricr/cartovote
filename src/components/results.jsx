@@ -12,7 +12,7 @@ export default function Results({ infos }) {
               <div>
                 {infos?.bv?.nomCirco || ""}
                 <br />
-                Bureau {infos?.bv?.numeroBureauVote}
+                {infos?.bv?.numeroBureauVote ? `Bureau ${infos.bv.numeroBureauVote}` : ''}
                 <br />
                 Inscrits : {infos?.bv?.inscrits}
                 <br />

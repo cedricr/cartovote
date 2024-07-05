@@ -18,7 +18,7 @@ import Results from "./components/results.js";
 
 import {
   elections,
-  getBVInfo,
+  getTerritoryInfo,
   getCommuneInfo,
   getCandidatesInfo,
   getCandidatesResults,
@@ -45,6 +45,9 @@ const electionInput = Inputs.select(elections, {
   value: elections[0],
 });
 const selectedElection = Generators.input(electionInput);
+
+const mailleInput = Inputs.select(["commune", "bureau de vote"]);
+const maille = Generators.input(mailleInput);
 
 const opacityInput = html`<input
   type="range"
@@ -104,7 +107,7 @@ const bureauxVoteDept = {
   ),
 };
 
-const communes_dept = {
+const communesDept = {
   type: "FeatureCollection",
   features: topojson
     .feature(bureauxVoteEtCommunes, bureauxVoteEtCommunes.objects.communes)
@@ -113,19 +116,60 @@ const communes_dept = {
     ),
 };
 
-const resGlobauxDept = resultatsGlobaux
+let resGlobauxDept = resultatsGlobaux
   .filter((c) => c.codeDepartement === selectedDept.code)
   .map((c) => ({
     ...c,
     codeBureauVote: `${c.codeCommune}_${c.numeroBureauVote}`,
   }));
 
-const resCandidatsDept = resultatsCandidats
+if (maille === "commune") {
+  resGlobauxDept = resGlobauxDept.reduce((acc, val) => {
+    let communeData = acc.find((r) => r.codeCommune === val.codeCommune);
+    if (!communeData) {
+      communeData = {
+        codeDepartement: val.codeDepartement,
+        codeCommune: val.codeCommune,
+      };
+      acc.push(communeData);
+    }
+    communeData.abstentions =
+      (communeData.abstentions || 0) + parseInt(val.abstentions);
+    communeData.blancs = (communeData.blancs || 0) + parseInt(val.blancs);
+    communeData.exprimes = (communeData.exprimes || 0) + parseInt(val.exprimes);
+    communeData.inscrits = (communeData.inscrits || 0) + parseInt(val.inscrits);
+    communeData.nuls = (communeData.nuls || 0) + parseInt(val.nuls);
+    communeData.votants = (communeData.votants || 0) + parseInt(val.votants);
+
+    return acc;
+  }, []);
+}
+
+let resCandidatsDept = resultatsCandidats
   .filter((c) => c.codeDepartement === selectedDept.code)
   .map((c) => ({
     ...c,
     codeBureauVote: `${c.codeCommune}_${c.numeroBureauVote}`,
   }));
+
+if (maille === "commune") {
+  resCandidatsDept = resCandidatsDept.reduce((acc, val) => {
+    let candidateData = acc.find(
+      (r) => r.codeCommune === val.codeCommune && r.liste === val.liste
+    );
+    if (!candidateData) {
+      candidateData = {
+        codeDepartement: val.codeDepartement,
+        codeCommune: val.codeCommune,
+        liste: val.liste,
+        nuance: val.nuance,
+      };
+      acc.push(candidateData);
+    }
+    candidateData.nbVoix = (candidateData.nbVoix || 0) + parseInt(val.nbVoix);
+    return acc;
+  }, []);
+}
 ```
 
 ```js
@@ -141,9 +185,9 @@ const setInfosBureauVote = (bv, commune, candidates) => {
 function handleMapClick(d) {
   const p = d.properties;
   setInfosBureauVote(
-    getBVInfo(resGlobauxDept, d),
-    getCommuneInfo(communes_dept, d),
-    getCandidatesInfo(resCandidatsDept, d)
+    getTerritoryInfo(resGlobauxDept, maille, d),
+    getCommuneInfo(communesDept, d),
+    getCandidatesInfo(resCandidatsDept, maille, d)
   );
 }
 ```
@@ -154,11 +198,13 @@ function handleMapClick(d) {
 //////////////////////////
 
 const valuemap = new Map(
-  bureauxVoteDept.features.map((d) => {
-    const b = getBVInfo(resGlobauxDept, d);
+  (maille === "commune" ? communesDept : bureauxVoteDept).features.map((d) => {
+    const b = getTerritoryInfo(resGlobauxDept, maille, d);
 
     return [
-      d.properties.codeBureauVote,
+      maille === "commune"
+        ? d.properties.codeCommune
+        : d.properties.codeBureauVote,
       parseFloat(b?.abstentions / b?.inscrits),
     ];
   })
@@ -181,6 +227,8 @@ const legend = Legend(d3.scaleSequential([20, 80], d3.interpolateBlues), {
 ${electionInput}
 
 ${deptInput}
+
+${mailleInput}
 
 <div class="map-container">
  <div class="card map">
@@ -205,8 +253,9 @@ display(<Results infos={infosBureauVote} />);
 ```js
 MainMap(
   width,
-  bureauxVoteDept,
-  communes_dept,
+  maille === "commune" ? communesDept : bureauxVoteDept,
+  maille,
+  communesDept,
   valuemap,
   handleMapClick,
   opacity
