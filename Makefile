@@ -20,7 +20,7 @@ deploy: build
 	npx netlify deploy --dir=dist --prod
 
 
-get-data: raw_data/contours-bv.topojson raw_data/candidats_results.csv raw_data/general_results.csv
+get-data: raw_data/contours-bv.topojson raw_data/candidats_results.csv raw_data/general_results.csv raw_data/res_2024_legi_t1.csv raw_data/res_2024_legi_t2.csv
 
 raw_data/contours-bv.topojson:
 	curl https://static.data.gouv.fr/resources/proposition-de-contours-des-bureaux-de-vote-selon-la-methode-de-linsee/20240626-071520/contours-bureaux-vote.json -o raw_data/contours-bv.topojson
@@ -32,8 +32,13 @@ raw_data/general_results.csv:
 	curl https://object.files.data.gouv.fr/data-pipeline-open/prod/elections/general_results.csv -o raw_data/general_results.csv
 
 # résultats législatives 2024
-raw_data/resultats-provisoires-par-bureau-de-votevmn.csv:
-	curl https://static.data.gouv.fr/resources/elections-legislatives-des-30-juin-et-7-juillet-2024-resultats-provisoires-du-1er-tour/20240701-155452/resultats-provisoires-par-bureau-de-votevmn.csv -o raw_data/resultats-provisoires-par-bureau-de-votevmn.csv
+raw_data/res_2024_legi_t1.csv:
+	curl https://static.data.gouv.fr/resources/elections-legislatives-des-30-juin-et-7-juillet-2024-resultats-provisoires-du-1er-tour/20240701-155452/resultats-provisoires-par-bureau-de-votevmn.csv -o raw_data/res_2024_legi_t1.csv
+
+# résultats législatives 2024
+raw_data/res_2024_legi_t2.csv:
+	curl https://static.data.gouv.fr/resources/elections-legislatives-des-30-juin-et-7-juillet-2024-resultats-provisoires-du-2nd-tour/20240708-165335/resultats-provisoires-par-bureau-de-vote.csv -o raw_data/res_2024_legi_t2.csv
+
 
 mapshaper: src/static/bureaux_vote_et_communes.topojson
 

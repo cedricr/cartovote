@@ -36,22 +36,7 @@ prepare_bv = function(election) {
   format_csv(results, na = "")
 }
 
-prepare_results_miom = function(filename) {
-  results = read_csv2(filename, show_col_types = FALSE) |>
-    clean_names() |>
-    select(
-      codeDepartement = code_departement,
-      codeCommune = code_commune,
-      numeroBureauVote = code_bv,
-      inscrits, abstentions,
-      votants, blancs, nuls, exprimes
-    ) |>
-    mutate(
-      codeCirco = "",
-      nomCirco = ""
-    )
-  format_csv(results, na = "")
-}
+
 
 
 prepare_candidats = function(election) {
@@ -84,17 +69,48 @@ prepare_candidats = function(election) {
   format_csv(results, na = "")
 }
 
-prepare_candidats_miom = function(filename) {
-  results = read_csv2(filename, show_col_types = FALSE) |>
+clean_results_miom_legi_2024 = function(filename) {
+  read_csv2(filename, show_col_types = FALSE) |>
     clean_names() |>
     select(
       codeDepartement = code_departement,
       codeCommune = code_commune,
       numeroBureauVote = code_bv,
-      starts_with("nuance_candidat_") | starts_with("nom_candidat_") | starts_with("prenom_candidat_") | starts_with("voix_") | starts_with("elu_")
+      inscrits, abstentions,
+      votants, blancs, nuls, exprimes
+    ) |>
+    mutate(
+      codeCirco = "",
+      nomCirco = ""
+    )
+}
+
+
+prepare_results_miom_legi_2024 = function(filename) {
+  results = clean_results_miom_legi_2024(filename)
+
+  format_csv(results, na = "")
+}
+
+
+clean_candidats_miom_legi_2024 = function(filename) {
+  read_csv2(filename, show_col_types = FALSE) |>
+    clean_names() |>
+    select(
+      codeDepartement = code_departement,
+      codeCommune = code_commune,
+      numeroBureauVote = code_bv,
+      starts_with("nuance_candidat_") |
+        starts_with("nom_candidat_") |
+        starts_with("prenom_candidat_") |
+        starts_with("voix_") |
+        starts_with("elu_")
     ) |>
     pivot_longer(
-      cols = starts_with("nuance_candidat_") | starts_with("nom_candidat_") | starts_with("prenom_candidat_") | starts_with("voix_") | starts_with("elu_"),
+      cols = starts_with("nuance_candidat_") |
+        starts_with("nom_candidat_") |
+        starts_with("prenom_candidat_") |
+        starts_with("voix_") | starts_with("elu_"),
       names_to = c(".value", "num_candidat"),
       names_pattern = "(.*)_(\\d*)",
       values_drop_na = TRUE,
@@ -106,5 +122,21 @@ prepare_candidats_miom = function(filename) {
       liste = str_c(prenom_candidat, " ", nom_candidat)
     ) |>
     select(-num_candidat, -prenom_candidat, -nom_candidat)
+}
+
+
+
+prepare_candidats_miom_legi_2024 = function(filename, first_turn_filename = "") {
+  results = clean_candidats_miom_legi_2024(filename) |>
+    mutate(elu_1er_tour = FALSE)
+
+  if (first_turn_filename != "") {
+    # On injecte les candidat·es élu·es au 1er tour
+    results_first_turn = clean_candidats_miom_legi_2024(first_turn_filename) |>
+      filter(elu == "élu") |>
+      mutate(elu_1er_tour = TRUE)
+    results = results |> bind_rows(results_first_turn)
+  }
+
   format_csv(results, na = "")
 }

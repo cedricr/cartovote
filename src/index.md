@@ -165,6 +165,7 @@ if (maille === "commune") {
         codeCommune: val.codeCommune,
         liste: val.liste,
         nuance: val.nuance,
+        elu_1er_tour: val.elu_1er_tour,
       };
       acc.push(candidateData);
     }

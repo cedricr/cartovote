@@ -6,3 +6,4 @@ node_modules/
 .netlify
 raw_data
 src/static
+archive

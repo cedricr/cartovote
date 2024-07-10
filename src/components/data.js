@@ -2,6 +2,12 @@ import { FileAttachment } from "npm:@observablehq/stdlib";
 
 export const elections = [
   {
+    id: "2024_legi_t2",
+    candidats: FileAttachment("../data/resultats_candidats_2024_legi_t2.csv"),
+    general: FileAttachment("../data/resultats_generaux_2024_legi_t2.csv"),
+    nom: "Élections législatives 2024, 2ᵈ tour",
+  },
+  {
     id: "2024_legi_t1",
     candidats: FileAttachment("../data/resultats_candidats_2024_legi_t1.csv"),
     general: FileAttachment("../data/resultats_generaux_2024_legi_t1.csv"),
@@ -17,7 +23,7 @@ export const elections = [
     id: "2022_legi_t2",
     candidats: FileAttachment("../data/resultats_candidats_2022_legi_t2.csv"),
     general: FileAttachment("../data/resultats_generaux_2022_legi_t2.csv"),
-    nom: "Élections législatives 2022, 2ᵉ tour",
+    nom: "Élections législatives 2022, 2ᵈ tour",
   },
   {
     id: "2022_legi_t1",
@@ -29,7 +35,7 @@ export const elections = [
     id: "2022_pres_t2",
     candidats: FileAttachment("../data/resultats_candidats_2022_pres_t2.csv"),
     general: FileAttachment("../data/resultats_generaux_2022_pres_t2.csv"),
-    nom: "Élection présidentielle 2022, 2ᵉ tour",
+    nom: "Élection présidentielle 2022, 2ᵈ tour",
   },
   {
     id: "2022_pres_t1",
