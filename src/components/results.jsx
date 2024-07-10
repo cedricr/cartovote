@@ -13,7 +13,9 @@ function CandidatesTable(candidates, bv) {
             <tr>
               <td>{c.liste}</td>
               <td>{c.nuance}</td>
-              <td colspan="2">Élu·e au 1ᵉʳ tour</td>
+              <td colspan="2">
+                Élu·e au 1<sup>er</sup> tour
+              </td>
             </tr>
           );
         } else {
@@ -60,9 +62,13 @@ export default function Results({ infos }) {
           </div>
         ) : (
           <div>
-            {!infos.candidates?.length
-              ? "Informations non disponibles"
-              : "Pas d’élection ; candidat·e élu·e au 1ᵉʳ tour"}
+            {!infos.candidates?.length ? (
+              "Informations non disponibles"
+            ) : (
+              <span>
+                Pas d’élection ; candidat·e élu·e au 1<sup>er</sup> tour
+              </span>
+            )}
           </div>
         )}
         {infos.candidates != null
