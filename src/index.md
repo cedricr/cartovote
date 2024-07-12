@@ -31,9 +31,7 @@ import {
 // Inputs
 /////////
 
-const departements = (
-  await d3.json("https://geo.api.gouv.fr/departements")
-).filter((d) => d.code != "976"); // TODO: récupérer les données de Mayotte
+const departements = await d3.json("https://geo.api.gouv.fr/departements"); // TODO: use ours
 
 const deptInput = Inputs.select(departements, {
   format: (t) => `${t.code} – ${t.nom}`,
@@ -92,10 +90,9 @@ const bureauxVote = {
         ...f,
         properties: {
           ...f.properties,
+          numeroBureauVote: f.properties?.codeBureauVote,
           codeBureauVote: f.properties?.codeBureauVote
-            ? `${f.properties.codeCommune}_${
-                f.properties.codeBureauVote.split("_")[1]
-              }`
+            ? `${f.properties.codeCommune}_${f.properties.codeBureauVote}`
             : null,
         },
       };

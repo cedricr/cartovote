@@ -100,12 +100,9 @@ function displayOverlay(
         tooltip.show(`<strong>${data.nomCommune}</strong>`, mx, my);
       } else {
         tooltip.show(
-          `<strong>${
-            data.nomCommune
-          }</strong><br />Bureau nº${data?.numeroBureauVote.replace(
-            /^0+/,
-            ""
-          )}`,
+          `<strong>${data.nomCommune}</strong> <br />
+          ${data.nomCirco}<br />
+          Bureau nº ${data?.numeroBureauVote.replace(/^0+/, "")}`,
           mx,
           my
         );

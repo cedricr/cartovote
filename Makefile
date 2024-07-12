@@ -23,7 +23,7 @@ deploy: build
 get-data: raw_data/contours-bv.topojson raw_data/candidats_results.csv raw_data/general_results.csv raw_data/res_2024_legi_t1.csv raw_data/res_2024_legi_t2.csv
 
 raw_data/contours-bv.topojson:
-	curl https://static.data.gouv.fr/resources/proposition-de-contours-des-bureaux-de-vote-selon-la-methode-de-linsee/20240626-071520/contours-bureaux-vote.json -o raw_data/contours-bv.topojson
+	curl https://static.data.gouv.fr/resources/proposition-de-contours-des-bureaux-de-vote-selon-la-methode-de-linsee/20240711-174028/contours-bureaux-vote.json -o raw_data/contours-bv.topojson
 
 raw_data/candidats_results.csv:
 	curl https://object.files.data.gouv.fr/data-pipeline-open/prod/elections/candidats_results.csv -o raw_data/candidats_results.csv
@@ -48,8 +48,9 @@ src/static/bureaux_vote_et_communes.topojson: raw_data/contours-bv.topojson
 	-clean rewind \
 	-simplify 5% visvalingam keep-shapes \
 	-clean  \
-	-filter-fields codeBureauVote,codeDepartement,codeCommune,numeroBureauVote,nomCommune \
-	-dissolve codeCommune,nomCommune,codeDepartement + name=communes \
+	-dissolve codeCommune,nomCommune,codeDepartement + name=communes target=bureaux_vote \
+	-dissolve codeCirco,nomCirco,codeDepartement + name=circos target=bureaux_vote \
+	-dissolve codeDepartement,nomDepartement + name=departements target=bureaux_vote \
 	-o format=topojson src/static/bureaux_vote_et_communes.topojson target=* quantization=1e6 fix-geometry
 
 clean:

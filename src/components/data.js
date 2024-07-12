@@ -65,9 +65,15 @@ export function getTerritoryInfo(results, level, territory) {
       (f) => f.codeCommune === territory.properties.codeCommune
     );
   }
-  return results.find(
+  const info = results.find(
     (f) => f.codeBureauVote === territory.properties.codeBureauVote
   );
+  if (info)
+    return {
+      ...info,
+      codeCirco: info.codeCirco || territory.properties.codeCirco,
+      nomCirco: info.nomCirco || territory.properties.nomCirco,
+    };
 }
 
 export function getCommuneInfo(communes, bv) {

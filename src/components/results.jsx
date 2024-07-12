@@ -46,7 +46,7 @@ export default function Results({ infos }) {
             {infos?.bv?.nomCirco || ""}
             <br />
             {infos?.bv?.numeroBureauVote
-              ? `Bureau ${infos.bv.numeroBureauVote}`
+              ? `Bureau nº ${infos.bv.numeroBureauVote?.replace(/^0+/, "")}`
               : ""}
             <br />
             Inscrits : {infos?.bv?.inscrits}
