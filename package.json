@@ -14,7 +14,7 @@
     "d3-time-format": "^4.1.0"
   },
   "devDependencies": {
-    "netlify-cli": "^17.29.0",
+    "netlify-cli": "^17.36.2",
     "rimraf": "^5.0.7"
   },
   "engines": {
