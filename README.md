@@ -1,3 +1,7 @@
+Dépôt déplacé vers https://codeberg.org/cedricr/cartovote
+
+***
+
 # CartoVote
 
 Attention, peinture fraiche !
